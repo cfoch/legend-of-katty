@@ -1,9 +1,11 @@
+#include "tlib.h"
+
 #ifndef __T_MLIST_H__
 #define __T_MLIST_H__
 
 #define T_MLIST(x)      ((TMList *) x)
 
-typedef TMList struct _TMList;
+typedef struct _TMList TMList;
 
 struct _TMList {
   TList *start;
@@ -13,7 +15,8 @@ struct _TMList {
 
 TMList * t_mlist_new ();
 tpointer t_mlist_pop (TMList * list);
-void t_mlist_prepend (TMlist * list, tpointer data);
+void t_mlist_prepend (TMList * list, tpointer data);
 void t_mlist_append (TMList * list, tpointer data);
+TBoolean t_mlist_is_empty (TMList * list);
 
 #endif /* __T_MLIST_H__ */

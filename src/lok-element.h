@@ -1,3 +1,5 @@
+#include "lok.h"
+
 #ifndef __LOK_ELEMENT_H__
 #define __LOK_ELEMENT_H__
 
@@ -6,8 +8,6 @@ typedef enum {
   LOK_ELEMENT_TYPE_ARM,
   LOK_ELEMENT_TYPE_MEDAL
 } LokElementType;
-
-typedef LokElement struct _LokElement;
 
 struct _LokElement {
   const tchar *name;

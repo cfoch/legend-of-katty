@@ -41,4 +41,6 @@ int t_array_binary_lookup_index_with_data (TArray * array, tpointer element,
 TArray * t_array_new_with_length (int length);
 void t_array_insert (TArray * array, int index, tpointer data);
 
+#define T_ARRAY(t)           (TArray *) (t)
+
 #endif /* __T_ARRAY_H__ */

@@ -11,5 +11,8 @@
 
 #include "ttypes.h"
 #include "tarray.h"
+#include "tlist.h"
+#include "tmlist.h"
+#include "tutils.h"
 
 #endif /* __T_LIB_H__ */
