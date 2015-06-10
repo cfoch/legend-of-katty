@@ -1,8 +1,12 @@
 #ifndef __LOK_H__
 #define __LOK_H__
 
+#define LOK_DEBUG_MSG                               "Debug"
+
 #define LOK_MAX_LEVELS_NUMBER                       99
 #define LOK_HERO_MAX_LIFE_POINTS                         1000
+
+#include <stdio.h>
 
 #include "tlib.h"
 #include "lok-types.h"

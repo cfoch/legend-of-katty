@@ -14,5 +14,10 @@ struct _LokGame {
   int count_levels;
 };
 
+LokGame * lok_game_new (void);
+void lok_game_init (LokGame * game, /*LokPlayer * player, */ LokHero * hero,
+    TArray * available_elements);
+
+
 
 #endif /* __LOK_GAME_H__ */

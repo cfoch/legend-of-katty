@@ -19,5 +19,8 @@ LokElement * lok_element_new (const tchar * element_name, int points,
     int weight);
 void lok_element_free (LokElement * element);
 LokElementType lok_element_get_type (LokElement * element);
+TArray * lok_element_create_elements (LokElementType type);
+void LOK_DEBUG_ELEMENT (LokElement * element);
+void LOK_DEBUG_ELEMENTS (TArray * elements);
 
 #endif /* __LOK_ELEMENT_H__ */
