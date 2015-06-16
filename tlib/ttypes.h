@@ -1,8 +1,10 @@
 #ifndef __T_TYPES_H__
 #define __T_TYPES_H__
 
+#ifndef TRUE
 #define TRUE  1
 #define FALSE !TRUE
+#endif
 
 typedef int TBoolean;
 typedef void * tpointer;

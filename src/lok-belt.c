@@ -1,12 +1,12 @@
 #include "lok.h"
 
-LokPocketBelt *
+LokBeltPocket *
 lok_belt_pocket_new ()
 {
   LokBeltPocket *pocket;
   pocket = malloc (sizeof (LokBeltPocket));
-  pocket->capacity = NULL;
-  return pocket
+  pocket->capacity = 0;
+  return pocket;
 }
 
 void
@@ -43,8 +43,8 @@ lok_belt_new (LokGame * game)
     LokBeltPocket *pocket;
     LokElement *element = NULL;
     pocket = lok_belt_pocket_new ();
-    lok_belt_pocket_set_capacity (pocket, capacity, capacity);
-    lok_belt_pocket_set_element (pocket, capacity, element);
+    lok_belt_pocket_set_capacity (pocket, capacity);
+    lok_belt_pocket_set_element (pocket, element);
     t_array_append (array, pocket);
   }
 }
@@ -63,6 +63,6 @@ lok_belt_free (LokBelt * belt)
   int i;
   for (i = 0; i < t_array_length (T_ARRAY (belt)); i++)
     lok_belt_pocket_free (t_array_index (T_ARRAY (belt), i));
-  free (T_ARRAY (belt)->vector);
+  free (T_ARRAY (belt)->array);
   free (T_ARRAY (belt));
 }

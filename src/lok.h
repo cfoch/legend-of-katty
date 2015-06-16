@@ -7,6 +7,7 @@
 #define LOK_HERO_MAX_LIFE_POINTS                         1000
 
 #include <stdio.h>
+#include <gtk/gtk.h>
 
 #include "tlib.h"
 #include "lok-types.h"
@@ -17,5 +18,8 @@
 #include "lok-belt.h"
 #include "lok-game.h"
 #include "lok-hero.h"
+
+#include "lok-bag-pack-widget.h"
+#include "lok-belt-widget.h"
 
 #endif /* __LOK_H__ */

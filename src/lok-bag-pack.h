@@ -9,7 +9,7 @@ struct _LokBagPack {
 };
 
 LokBagPack * lok_bag_pack_new (LokGame * game);
-LokBagPack * log_bag_pack_add_element (LokBagPack * bag_pack,
+LokBagPack * lok_bag_pack_add_element (LokBagPack * bag_pack,
     LokElement * element);
 TBoolean lok_bag_pack_is_empty (LokBagPack * bag_pack);
 LokElement * lok_bag_pack_pop_element (LokBagPack * bag_pack);

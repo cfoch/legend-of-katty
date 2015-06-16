@@ -1,7 +1,5 @@
 #include "tarray.h"
 
-#define T_ARRAY(t)           (TArray *) (t)
-
 #define _t_alloc_array()     malloc(sizeof (TArray))
 #define _t_realloc_vector(a, sz)   t_alloc(a,tpointer,sz)
 
@@ -233,7 +231,7 @@ t_array_insertion_sort (TArray * array, TCompFunc cmp_func)
 
 /* TODO: this is *really* ugly! Make me more beatiful */
 
-static
+static void
 _t_array_merge_with_data (TArray * array, int start_index, int middle_index,
     int end_index, TCompDataFunc cmp_func, tpointer cmp_data)
 {

@@ -8,6 +8,7 @@ t_mlist_new ()
   list->start = NULL;
   list->end = NULL;
   list->length = 0;
+  return list;
 }
 
 int
@@ -26,13 +27,20 @@ t_mlist_pop (TMList * list)
   head = list->start;
   ret = head->data;
   list->start = head->next;
-  list->start->prev = NULL;
+  if (list->start != NULL)
+    list->start->prev = NULL;
   free (head);
   return ret;
 }
 
+TBoolean
+t_mlist_is_empty (TMList * list)
+{
+  return (list->start == NULL) && (list->end == NULL);
+}
+
 void
-t_mlist_prepend (TMlist * list, tpointer data)
+t_mlist_prepend (TMList * list, tpointer data)
 {
   list->start = t_list_prepend (list->start, data);
 }
@@ -40,7 +48,7 @@ t_mlist_prepend (TMlist * list, tpointer data)
 void
 t_mlist_append (TMList * list, tpointer data)
 {
-  TList * new_list;
+  TList *new_list;
   new_list = t_list_new ();
   new_list = t_list_prepend (new_list, data);
   if (list->end)
