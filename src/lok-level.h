@@ -4,7 +4,8 @@
 #define __LOK_LEVEL_H__
 
 struct _LokLevel {
-
+  TArray *array;
+  LokGame *game;
 };
 
 LokLevel * lok_level_new ();

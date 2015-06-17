@@ -1,5 +1,7 @@
 #include "lok.h"
 
+#define LOK_BELT_POCKET(x)                    (LokBeltPocket *)
+
 LokBeltPocket *
 lok_belt_pocket_new ()
 {
@@ -31,30 +33,56 @@ lok_belt_pocket_free (LokBeltPocket * pocket)
 LokBelt *
 lok_belt_new (LokGame * game)
 {
-  /* FIXME */
-  /* Set random length */
+  LokBelt *belt;
   TArray *array;
   int length, i;
-  array = t_array_new ();
+
+  belt = malloc (sizeof (LokBelt));
+  belt->game = game;
+  belt->array = t_array_new ();
+  length = LOK_BELT_MAX_LENGTH;
   for (i = 0; i < length; i++) {
     int capacity;
-    /* FIXME */
-    /* Set random capacity */
     LokBeltPocket *pocket;
-    LokElement *element = NULL;
+
+    capacity = t_random_int (LOK_BELT_POCKET_MIN_WEIGHT,
+        LOK_BELT_POCKET_MAX_WEIGHT);
     pocket = lok_belt_pocket_new ();
     lok_belt_pocket_set_capacity (pocket, capacity);
-    lok_belt_pocket_set_element (pocket, element);
-    t_array_append (array, pocket);
+    lok_belt_pocket_set_element (pocket, NULL);
+    t_array_append (belt->array, pocket);
   }
+  return belt;
+}
+
+static LokBeltPocket *
+lok_belt_get_belt_pocket (LokBelt * belt, int index)
+{
+  return LOK_BELT_POCKET (t_array_index (belt->array, index));
 }
 
 void
 lok_belt_insert_element (LokBelt * belt, int index, LokElement * element)
 {
-  /* TODO */
-  /* Handle the case in which index >= length */
-  t_array_insert (T_ARRAY (belt), index, element);
+  LokBeltPocker *belt_pocket;
+
+  belt_pocket = lok_belt_get_belt_pocket (belt, index);
+  if (belt_pocket->capacity >= element->weight)
+    belt_pocket->element = element;
+}
+
+LokElement *
+lok_belt_get_element (LokBelt * belt, int index)
+{
+  return lok_belt_get_belt_pocket (belt, index)->element;
+}
+
+void
+lok_belt_remove_element (LokBelt * belt, int index)
+{
+  LokBeltPocket *belt_pocket;
+  belt_pocket = lok_belt_get_belt_pocket (belt, index);
+  belt_pocket->element = NULL;
 }
 
 void

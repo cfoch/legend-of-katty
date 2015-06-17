@@ -8,6 +8,7 @@ struct _LokHero {
   int life_points;
   LokBagPack *bag_pack;
   LokBelt *belt;
+  LokElement *hand;
 };
 
 LokHero * lok_hero_new (LokGame * game);
