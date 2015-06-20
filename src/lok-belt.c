@@ -1,7 +1,5 @@
 #include "lok.h"
 
-#define LOK_BELT_POCKET(x)                    (LokBeltPocket *)
-
 LokBeltPocket *
 lok_belt_pocket_new ()
 {
@@ -55,7 +53,7 @@ lok_belt_new (LokGame * game)
   return belt;
 }
 
-static LokBeltPocket *
+LokBeltPocket *
 lok_belt_get_belt_pocket (LokBelt * belt, int index)
 {
   return LOK_BELT_POCKET (t_array_index (belt->array, index));
@@ -64,7 +62,7 @@ lok_belt_get_belt_pocket (LokBelt * belt, int index)
 void
 lok_belt_insert_element (LokBelt * belt, int index, LokElement * element)
 {
-  LokBeltPocker *belt_pocket;
+  LokBeltPocket *belt_pocket;
 
   belt_pocket = lok_belt_get_belt_pocket (belt, index);
   if (belt_pocket->capacity >= element->weight)

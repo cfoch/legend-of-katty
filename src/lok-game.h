@@ -12,12 +12,11 @@ struct _LokGame {
   LokLevel *current_level;
   int max_levels;
   int count_levels;
+  double difficulty;
 };
 
 LokGame * lok_game_new (void);
-void lok_game_init (LokGame * game, /*LokPlayer * player, */ LokHero * hero,
-    TArray * available_elements);
-
-
+void lok_game_init (LokGame * game);
+void lok_game_set_hero (LokGame * game, LokHero * hero);
 
 #endif /* __LOK_GAME_H__ */

@@ -24,5 +24,6 @@ void lok_belt_insert_element (LokBelt * belt, int index, LokElement * element);
 void lok_belt_free (LokBelt * belt);
 LokElement * lok_belt_get_element (LokBelt * belt, int index);
 void lok_belt_remove_element (LokBelt * belt, int index);
+LokBeltPocket * lok_belt_get_belt_pocket (LokBelt * belt, int index);
 
 #endif /* __LOK_BELT__ */

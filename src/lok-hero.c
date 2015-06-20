@@ -1,5 +1,26 @@
 #include "lok.h"
 
+static LokHeroActor LOK_HERO_ACTORS[] = {
+  {"ironman", "img/hero/1.png"},
+  {"helmet", "img/hero/2.png"},
+  {"spidey", "img/hero/3.png"},
+  {"hulk", "img/hero/4.png"},
+  {NULL, NULL}
+};
+
+
+LokHeroActor *
+lok_hero_actor_new (int index)
+{
+  LokHeroActor *hero_actor;
+  hero_actor = malloc (sizeof (LokHeroActor));
+  hero_actor->name = LOK_HERO_ACTORS[index].name;
+  hero_actor->img_path = LOK_HERO_ACTORS[index].img_path;
+
+  return hero_actor;
+}
+
+
 LokHero *
 lok_hero_new (LokGame * game)
 {
@@ -13,6 +34,12 @@ lok_hero_new (LokGame * game)
   hero->hand = NULL;
 
   return hero;
+}
+
+void
+lok_hero_set_actor (LokHero * hero, int index)
+{
+  hero->actor = lok_hero_actor_new (index);
 }
 
 void
@@ -53,6 +80,7 @@ lok_hero_pop_bag_pack (LokHero * hero)
   lok_bag_pack_pop_element (hero->bag_pack);
 }
 
+/*
 void
 lok_hero_use_belt (LokHero * hero, int index)
 {
@@ -60,7 +88,7 @@ lok_hero_use_belt (LokHero * hero, int index)
   element = lok_belt_get_element (hero->belt, index);
   if (!element)
     return;
-  if (lok_element_get_type (element == LOK_ELEMENT_TYPE_POTION)) {
+  if (lok_element_get_type (element) == LOK_ELEMENT_TYPE_POTION) {
     lok_hero_drink_potion (hero, element);
     lok_belt_remove_element (hero->belt, index);
   } else {
@@ -68,16 +96,17 @@ lok_hero_use_belt (LokHero * hero, int index)
       lok_belt_remove_element (hero->belt, index);
       hero->hand = element;
     } else { 
-      int capacity_belt = lok_belt_get_belt_pocket (hero->belt,index) ->capicity;
-      if (capicity_belt >= hero->hand->weight){
+      int capacity_belt;
+      capacity_belt = lok_belt_get_belt_pocket (hero->belt, index)->capacity;
+      if (capacity_belt >= hero->hand->weight) {
         lok_belt_remove_element (hero->belt, index);
-        lok_belt_insert_element (hero->belt, hero->hand);
+        lok_belt_insert_element (hero->belt, hero->hand, index);
         hero->hand = element;
       }
-      /*No hace nada si no puede poner el arma de la mano en el cinturon*/ 
     }
   }
 }
+*/
 
 void
 lok_hero_remove_element_belt (LokHero * hero, int index)
@@ -93,4 +122,21 @@ lok_hero_free (LokHero * hero)
   free (hero);
 }
 
+TArray *
+lok_hero_create_heros ()
+{
+  TArray *heros;
+  LokHero *hero;
+  int i;
+
+  heros = t_array_new ();
+
+  for (i = 0; LOK_HERO_ACTORS[i].name != NULL; i++) {
+    hero = lok_hero_new (NULL);
+    lok_hero_set_actor (hero, i);
+    t_array_append (heros, hero);
+  }
+
+  return heros;
+}
 

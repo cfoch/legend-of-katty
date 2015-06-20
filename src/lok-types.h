@@ -18,6 +18,7 @@ typedef struct _LokBelt LokBelt;
 typedef struct _LokBeltPocket LokBeltPocket;
 typedef struct _LokEnemy LokEnemy;
 typedef struct _LokHero LokHero;
+typedef struct _LokHeroActor LokHeroActor;
 typedef struct _LokLevel LokLevel;
 
 #endif /* __LOK_TYPES_H__ */
