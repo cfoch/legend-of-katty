@@ -1,4 +1,4 @@
-#include "tmatrix.h"
+#include "tlib.h"
 
 TMatrix *
 t_matrix_new (int width, int height)

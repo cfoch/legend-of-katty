@@ -1,9 +1,7 @@
-#include "tlib.h"
-
 #ifndef __T_LIST_H__
 #define __T_LIST_H__
 
-typedef struct _TList TList;
+#include "ttypes.h"
 
 struct _TList {
   tpointer data;

@@ -1,11 +1,9 @@
-#include "tlib.h"
-
 #ifndef __T_MLIST_H__
 #define __T_MLIST_H__
 
-#define T_MLIST(x)      ((TMList *) x)
+#include "ttypes.h"
 
-typedef struct _TMList TMList;
+#define T_MLIST(x)      ((TMList *) x)
 
 struct _TMList {
   TList *start;

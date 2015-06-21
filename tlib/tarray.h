@@ -1,6 +1,7 @@
 #ifndef __T_ARRAY_H__
 #define __T_ARRAY_H__
-#include "tlib.h"
+
+#include "ttypes.h"
 
 struct _TArray
 {
@@ -8,8 +9,6 @@ struct _TArray
   int len;
   TFunc free_func;
 };
-
-typedef struct _TArray TArray;
 
 TArray * t_array_new ();
 void t_array_foreach (TArray * array, TFunc func, tpointer user_data);
