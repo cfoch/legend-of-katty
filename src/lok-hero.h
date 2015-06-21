@@ -5,7 +5,8 @@
 
 struct _LokHeroActor {
   const char *name;
-  const char *img_path;
+  const char *profile_img_path;
+  const char *actor_img_path;
 };
 
 struct _LokHero {

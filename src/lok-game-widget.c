@@ -36,7 +36,7 @@ lok_game_panel_widget (LokGame * game)
   player_name = gtk_label_new (NULL);
   gtk_label_set_markup (GTK_LABEL (player_name),
       "<span font_weight=\"bold\" font_size=\"x-large\">TODO</span>"); 
-  hero_avatar = gtk_image_new_from_file (game->hero->actor->img_path);
+  hero_avatar = gtk_image_new_from_file (game->hero->actor->profile_img_path);
   hero_name = gtk_label_new (game->hero->actor->name);
 
   details = gtk_grid_new ();

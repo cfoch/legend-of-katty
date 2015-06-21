@@ -1,10 +1,10 @@
 #include "lok.h"
 
 static LokHeroActor LOK_HERO_ACTORS[] = {
-  {"ironman", "img/hero/1.png"},
-  {"helmet", "img/hero/2.png"},
-  {"spidey", "img/hero/3.png"},
-  {"hulk", "img/hero/4.png"},
+  {"ironman", "img/hero/1.png", "img/hero/actor/1.png"},
+  {"helmet", "img/hero/2.png", "img/hero/actor/2.png"},
+  {"spidey", "img/hero/3.png", "img/hero/actor/3.png"},
+  {"hulk", "img/hero/4.png", "img/hero/actor/4.png"},
   {NULL, NULL}
 };
 
@@ -15,7 +15,8 @@ lok_hero_actor_new (int index)
   LokHeroActor *hero_actor;
   hero_actor = malloc (sizeof (LokHeroActor));
   hero_actor->name = LOK_HERO_ACTORS[index].name;
-  hero_actor->img_path = LOK_HERO_ACTORS[index].img_path;
+  hero_actor->profile_img_path = LOK_HERO_ACTORS[index].profile_img_path;
+  hero_actor->actor_img_path = LOK_HERO_ACTORS[index].actor_img_path;
 
   return hero_actor;
 }

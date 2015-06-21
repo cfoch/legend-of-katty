@@ -11,6 +11,7 @@
 
 #include "ttypes.h"
 #include "tarray.h"
+#include "tmatrix.h"
 #include "tlist.h"
 #include "tmlist.h"
 #include "tutils.h"

@@ -27,9 +27,9 @@ lok_heros_list_store (TArray * heros)
 
     hero = LOK_HERO (t_array_index (heros, i));
 
-    pixbuf = gdk_pixbuf_new_from_file (hero->actor->img_path, &error);
+    pixbuf = gdk_pixbuf_new_from_file (hero->actor->profile_img_path, &error);
     gtk_list_store_append (list_store, &iter);
-    g_print ("actor: %s\n", hero->actor->img_path);
+    g_print ("actor: %s\n", hero->actor->profile_img_path);
     gtk_list_store_set (list_store, &iter, COL_HERO_IMG, pixbuf,
       COL_HERO_NAME, hero->actor->name, COL_HERO_REFERENCE, hero, -1);
   }
