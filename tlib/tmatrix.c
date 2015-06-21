@@ -24,7 +24,7 @@ t_matrix_new (int width, int height)
 }
 
 void
-t_matrix_new_insert (TMatrix * matrix, tpointer data, int i, int j)
+t_matrix_insert (TMatrix * matrix, tpointer data, int i, int j)
 {
   TArray *child;
   child = T_ARRAY (t_array_index (matrix->parent, i));

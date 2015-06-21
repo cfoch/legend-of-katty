@@ -10,7 +10,7 @@ struct _TMatrix {
 };
 
 TMatrix * t_matrix_new (int width, int height);
-void t_matrix_new_insert (TMatrix * matrix, tpointer data, int i, int j);
+void t_matrix_insert (TMatrix * matrix, tpointer data, int i, int j);
 tpointer t_matrix_get (TMatrix * matrix, int i, int j);
 void t_matrix_free (TMatrix * matrix);
 

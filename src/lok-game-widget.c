@@ -20,7 +20,7 @@ lok_game_screen_widget (LokGame * game)
 }
 
 static GtkWidget *
-lok_game_panel_widget (LokGame * game)
+lok_game_profile_panel_widget (LokGame * game)
 {
   GtkWidget *box;
   GtkWidget *player_name, *hero_avatar, *hero_name, *life, *details;
@@ -152,7 +152,7 @@ lok_game_widget_new (GtkApplication * app)
     lok_game_init (game);
     lok_game_set_hero (game, hero);
 
-    panel = lok_game_panel_widget (game);
+    panel = lok_game_profile_panel_widget (game);
     screen = lok_game_screen_widget (game);
 
     gtk_box_pack_start (GTK_BOX (box), panel, TRUE, TRUE, 1);

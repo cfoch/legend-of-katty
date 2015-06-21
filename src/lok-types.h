@@ -10,6 +10,12 @@
 #define LOK_HERO(x)             (LokHero *) x
 #define LOK_LEVEL(x)            (LokLevel *) x
 
+typedef enum {
+  LOK_DIRECTION_RIGHT,
+  LOK_DIRECTION_LEFT,
+  LOK_DIRECTION_UP,
+  LOK_DIRECTION_DOWN
+} LokDirection;
 
 typedef struct _LokBagPack LokBagPack;
 typedef struct _LokGame LokGame;
@@ -20,5 +26,6 @@ typedef struct _LokEnemy LokEnemy;
 typedef struct _LokHero LokHero;
 typedef struct _LokHeroActor LokHeroActor;
 typedef struct _LokLevel LokLevel;
+typedef struct _LokLevelObject LokLevelObject;
 
 #endif /* __LOK_TYPES_H__ */

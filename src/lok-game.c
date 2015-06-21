@@ -32,18 +32,19 @@ lok_game_init (LokGame * game)
   game->available_potions =\
       lok_element_create_elements (LOK_ELEMENT_TYPE_POTION);
   game->available_arms = lok_element_create_elements (LOK_ELEMENT_TYPE_ARM);
+  game->current_level = lok_level_new (game);
   /* game->available_mosters = lok_moster_create_monsters (); */
 
-  lok_level_init_random (game->current_level);
+  /* lok_level_init_random (game->current_level); */
+  lok_level_init_test (game->current_level);
 
   game->max_levels = t_random_int (2, LOK_MAX_LEVELS_NUMBER);
   game->count_levels = 1;
 }
+
 
 void
 lok_game_set_hero (LokGame * game, LokHero * hero)
 {
   game->hero = hero;
 }
-
-

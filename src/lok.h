@@ -21,6 +21,7 @@
 #include "lok-element.h"
 #include "lok-bag-pack.h"
 #include "lok-enemy.h"
+#include "lok-level-object.h"
 #include "lok-level.h"
 #include "lok-belt.h"
 #include "lok-game.h"
