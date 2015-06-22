@@ -53,7 +53,6 @@ lok_game_profile_panel_widget (LokGameWidget * game_widget)
   /* Creating pixbufs */
   pixbuf_hero = gdk_pixbuf_new_from_file (game->hero->actor->profile_img_path,
       &pixbuf_err);
-  g_print ("pixbuf_error?:%d\n", pixbuf_err == NULL);
 
   /* Creating widgets */
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 5);
@@ -185,24 +184,18 @@ lok_game_widget_update_element_info (LokGameWidget * game_widget)
   weight_info = "--------";
 
   if (level_object) {
-    g_print ("Tele_ka====: %d\n", level_object->type == LOK_LEVEL_OBJECT_TYPE_ELEMENT);
     if (lok_level_object_is_element (level_object)) {
       LokElement *element;
       LokElementType type;
       element = lok_level_object_get_element (level_object);
       type = lok_element_get_type (element);
 
-      g_print ("Tele_ka\n");
-
       type_info = lok_element_type_to_string (type);
-      g_print ("type_info: \n", type_info);
       name_info = g_strdup (element->name);
       points_info = g_strdup_printf ("%d", element->points);
       weight_info = g_strdup_printf ("%d", element->weight);
 
       img_path = element->img_path;
-      g_print ("%s->%s\n", name_info, img_path);
-
     } else if (lok_level_object_is_enemy (level_object)) {
 
     }
