@@ -2,7 +2,7 @@
 
 typedef struct {
   ClutterActor *hero_actor;
-  LokGame *game;
+  LokGameWidget *game_widget;
 } LokGameStage;
 
 ClutterActor *
@@ -85,10 +85,11 @@ _move (LokGameStage * game_stage, LokDirection direction)
 {
   clutter_actor_save_easing_state (game_stage->hero_actor);
 
-  lok_level_move_hero (game_stage->game->current_level, direction);
+  lok_level_move_hero (game_stage->game_widget->game->current_level, direction);
   clutter_actor_set_position (game_stage->hero_actor,
-      game_stage->game->current_level->hero_xpos * 75,
-      game_stage->game->current_level->hero_ypos * 75);
+      game_stage->game_widget->game->current_level->hero_xpos * 75,
+      game_stage->game_widget->game->current_level->hero_ypos * 75);
+  lok_game_widget_update_element_info (game_stage->game_widget);
 
   clutter_actor_restore_easing_state (game_stage->hero_actor);
 }
@@ -137,14 +138,16 @@ _key_press_cb (ClutterActor *actor,
 }
 
 void
-lok_game_stage_init (ClutterActor * stage, LokGame * game)
+lok_game_stage_init (ClutterActor * stage, LokGameWidget * game_widget)
 {
   ClutterActor *pattern, *actor;
   ClutterBindingPool *binding_pool;
   ClutterStageClass *stage_class;
   LokGameStage *game_stage;
-
+  LokGame *game;
   int i, j;
+
+  game = game_widget->game;
 
   stage_class = CLUTTER_STAGE_GET_CLASS (stage);
   binding_pool = clutter_binding_pool_get_for_class (stage_class);
@@ -163,7 +166,7 @@ lok_game_stage_init (ClutterActor * stage, LokGame * game)
   actor = lok_game_stage_create_actor_from_hero (game->hero);
 
   game_stage = malloc (sizeof (LokGameStage));
-  game_stage->game = game;
+  game_stage->game_widget = game_widget;
   game_stage->hero_actor = actor;
 
   clutter_actor_set_position (actor, game->current_level->hero_xpos,

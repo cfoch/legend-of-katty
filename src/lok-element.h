@@ -13,13 +13,15 @@ struct _LokElement {
   const tchar *name;
   int points;
   int weight;
+  const tchar *img_path;
 };
 
 LokElement * lok_element_new (const tchar * element_name, int points,
-    int weight);
+    int weight, const tchar *img_path);
 void lok_element_free (LokElement * element);
 LokElementType lok_element_get_type (LokElement * element);
 TArray * lok_element_create_elements (LokElementType type);
+tchar *lok_element_type_to_string (LokElementType type);
 void LOK_DEBUG_ELEMENT (LokElement * element);
 void LOK_DEBUG_ELEMENTS (TArray * elements);
 

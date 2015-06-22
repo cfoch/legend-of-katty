@@ -37,7 +37,7 @@ static void
 activate (GtkApplication * app, gpointer user_data)
 {
   GtkWidget *window;
-  window = lok_game_widget_new (app);
+  window = GTK_WIDGET (lok_game_widget_new (app));
   gtk_widget_show_all (window);
 }
 

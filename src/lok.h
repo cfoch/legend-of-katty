@@ -11,6 +11,7 @@
 #define LOK_BELT_POCKET_MIN_WEIGHT                  1
 
 #include <stdio.h>
+#include <string.h>
 #include <gtk/gtk.h>
 #include <clutter/clutter.h>
 #include <clutter-gtk/clutter-gtk.h>
@@ -27,11 +28,11 @@
 #include "lok-game.h"
 #include "lok-hero.h"
 
+#include "lok-game-widget.h"
 #include "lok-game-stage.h"
 
 #include "lok-bag-pack-widget.h"
 #include "lok-belt-widget.h"
 #include "lok-heros-widget.h"
-#include "lok-game-widget.h"
 
 #endif /* __LOK_H__ */
