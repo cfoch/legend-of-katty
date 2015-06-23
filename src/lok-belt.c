@@ -38,7 +38,7 @@ lok_belt_new (LokGame * game)
   belt = malloc (sizeof (LokBelt));
   belt->game = game;
   belt->array = t_array_new ();
-  length = LOK_BELT_MAX_LENGTH;
+  length = t_random_int (6, LOK_BELT_MAX_LENGTH);
   for (i = 0; i < length; i++) {
     int capacity;
     LokBeltPocket *pocket;
