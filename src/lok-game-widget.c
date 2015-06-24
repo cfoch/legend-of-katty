@@ -28,6 +28,9 @@ struct _LokGameWidgetPrivate {
   GtkWidget *options_ignore;
   GtkWidget *button_use_belt;
   GtkWidget *button_use_bag_pack;
+  GtkWidget *player_entry;
+  GtkWidget *heros_icon_view;
+  const gchar *player_name_info;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (LokGameWidget, lok_game_widget, GTK_TYPE_APPLICATION_WINDOW)
@@ -97,6 +100,7 @@ lok_game_profile_panel_widget (LokGameWidget * game_widget)
 	GtkWidget *details_cenemies_label, *details_cenemies_info;
   GdkPixbuf *pixbuf_hero, *pixbuf_arm;
   GtkWidget *button_use_belt, *button_use_bag_pack;
+  const gchar *player_name_info;
   LokGame *game;
   gint height, width;
   GError *pixbuf_err = NULL;
@@ -113,9 +117,11 @@ lok_game_profile_panel_widget (LokGameWidget * game_widget)
   /* Creating widgets */
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 7);
 
+  player_name_info = game_widget->priv->player_name_info;
+
   player_name = gtk_label_new (NULL);
   gtk_label_set_markup (GTK_LABEL (player_name),
-      "<span font_weight=\"bold\" font_size=\"x-large\">HERO</span>"); 
+      g_strdup_printf ("<span font_weight=\"bold\" font_size=\"x-large\">%s</span>", player_name_info)); 
   hero_avatar = gtk_image_new_from_pixbuf (pixbuf_hero);
   hero_name = gtk_label_new (game->hero->actor->name);
 
@@ -376,10 +382,19 @@ lok_game_widget_update_element_info (LokGameWidget * game_widget)
 static GtkWidget *
 lok_game_heros_dialog (GtkWindow * main_app_window)
 {
+  LokGameWidget *game_widget;
   GtkWidget *dialog, *heros_icon_view, *content_area;
+  GtkWidget *box;
   TArray *heros;
   LokHero *hero;
   GtkDialogFlags flags;
+
+  game_widget = LOK_GAME_WIDGET (main_app_window);
+
+  box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+
+  game_widget->priv->player_entry = gtk_entry_new ();
+  
 
   flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
   dialog = gtk_dialog_new_with_buttons ("Legend Of Katty",
@@ -393,17 +408,23 @@ lok_game_heros_dialog (GtkWindow * main_app_window)
   heros = lok_hero_create_heros ();
   heros_icon_view = lok_heros_widget_new (heros, &hero);
 
+
+  gtk_box_pack_start (GTK_BOX (box), heros_icon_view, TRUE, TRUE, 1);
+  gtk_box_pack_start (GTK_BOX (box), game_widget->priv->player_entry, TRUE, TRUE, 0);
+
   content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-  gtk_container_add (GTK_CONTAINER (content_area), heros_icon_view);
+  gtk_container_add (GTK_CONTAINER (content_area), box);
+
+  game_widget->priv->heros_icon_view = heros_icon_view;
 
   return dialog;
 }
 
 static LokHero *
-lok_game_heros_dialog_run (GtkWidget * dialog)
+lok_game_heros_dialog_run (GtkWidget * dialog, LokGameWidget *game_widget)
 {
   gint result;
-  LokHero *hero;
+  LokHero *hero = NULL;
   gtk_widget_show_all (dialog);
 
   result = gtk_dialog_run (GTK_DIALOG (dialog));
@@ -419,9 +440,7 @@ lok_game_heros_dialog_run (GtkWidget * dialog)
       GtkTreeIter iter;
 
       content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-      list = gtk_container_get_children (GTK_CONTAINER (content_area));
-      heros_icon_view = GTK_WIDGET (list->data);
-      g_list_free (list);
+      heros_icon_view = game_widget->priv->heros_icon_view;
 
       heros_model = gtk_icon_view_get_model (GTK_ICON_VIEW (heros_icon_view));
       list = gtk_icon_view_get_selected_items (GTK_ICON_VIEW (heros_icon_view));
@@ -430,7 +449,11 @@ lok_game_heros_dialog_run (GtkWidget * dialog)
       if (gtk_tree_model_get_iter (heros_model, &iter, selected_path))
         /* TODO: Change 2 by a variable */
         gtk_tree_model_get (heros_model, &iter, 2, &hero, -1);
-
+      g_print ("HERE!\n");
+      game_widget->priv->player_name_info =\
+          g_strdup (gtk_entry_get_text (GTK_ENTRY (game_widget->priv->player_entry)));
+      g_print ("HERE2!\n");
+      gtk_widget_destroy (dialog);
       break;
     }
     default:
@@ -462,7 +485,7 @@ lok_game_widget_new (GtkApplication * app)
   widget = g_object_new (LOK_TYPE_GAME_WIDGET, "application", app, NULL);
   widget->priv->heros_dialog = lok_game_heros_dialog (GTK_WINDOW (widget));
 
-  hero = lok_game_heros_dialog_run (widget->priv->heros_dialog);
+  hero = lok_game_heros_dialog_run (widget->priv->heros_dialog, widget);
 
   if (hero) {
     GtkWidget *box;
@@ -483,6 +506,8 @@ lok_game_widget_new (GtkApplication * app)
     gtk_box_pack_start (GTK_BOX (box), element_panel, TRUE, TRUE, 1);
 
     gtk_container_add (GTK_CONTAINER (widget), box);
+  } else {
+    /* TODO: Handle it */
   }
 
   return widget;
