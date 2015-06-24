@@ -30,6 +30,7 @@ struct _LokGameWidget
   /* instance members */
   LokGame *game;
   GtkTreeModel *bag_pack_tree_model;
+  GtkTreeModel *belt_tree_model;
 };
 
 struct _LokGameWidgetClass

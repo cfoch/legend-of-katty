@@ -447,6 +447,10 @@ _use_bag_pack_cb (GtkWidget * button, LokGameWidget * game_widget)
 static void
 _use_belt_cb (GtkWidget * button, LokGameWidget * game_widget)
 {
+  GtkWidget *dialog;
+  dialog = lok_belt_widget_new (game_widget);
+  gtk_widget_show_all (dialog);
+  lok_belt_widget_dialog_run (dialog, game_widget);
 }
 
 static void
