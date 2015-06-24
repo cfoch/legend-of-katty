@@ -8,34 +8,58 @@ enum
   NUM_COLS
 };
 
-typedef struct {
-  LokBagPack *bag_pack;
-  GtkTreeModel *tree_model;
-} DummyType;
-
+enum {
+  RESPONSE_ID_POP = 0,
+  RESPONSE_ID_USE
+};
 
 static void
-pop_item_cb (GtkWidget * button, DummyType * dummy)
+_pop_tree_model (LokGameWidget * game_widget)
 {
-  LokBagPack *bag_pack;
   GtkListStore *list_store;
   GtkTreeIter iter;
 
-  bag_pack = dummy->bag_pack;
-  list_store = GTK_LIST_STORE (dummy->tree_model);
+  list_store = GTK_LIST_STORE (game_widget->bag_pack_tree_model);
 
-  gtk_tree_model_get_iter_first (dummy->tree_model, &iter);
-  lok_bag_pack_pop_element (bag_pack);
+  gtk_tree_model_get_iter_first (game_widget->bag_pack_tree_model,
+      &iter);
+  gtk_list_store_remove (list_store, &iter);
+}
 
-  gtk_list_store_remove (list_store, &iter);  
+void
+lok_bag_pack_widget_dialog_run (GtkWidget * dialog, LokGameWidget * game_widget)
+{
+  gint result;
+  LokHero *hero;
+  gtk_widget_show_all (dialog);
+
+  result = gtk_dialog_run (GTK_DIALOG (dialog));
+
+  switch (result) {
+    case RESPONSE_ID_POP:
+      _pop_tree_model (game_widget);
+      lok_bag_pack_pop_element (game_widget->game->hero->bag_pack);
+      break;
+    case RESPONSE_ID_USE:
+      lok_hero_use_bag_pack (game_widget->game->hero);
+      _pop_tree_model (game_widget);
+      lok_level_delete_object (game_widget->game->current_level);
+      break;
+    default:
+      break;
+  }
+  gtk_widget_destroy (dialog);
 }
 
 static GtkTreeModel *
-create_and_fill_model (LokBagPack * bag_pack)
+create_and_fill_model (LokGameWidget * game_widget)
 {
   GtkListStore *list_store;
   GtkTreeIter toplevel;
   TList *l;
+  LokBagPack *bag_pack;
+
+  bag_pack = game_widget->game->hero->bag_pack;
 
   list_store = gtk_list_store_new (NUM_COLS, G_TYPE_STRING, G_TYPE_INT,
       G_TYPE_INT);
@@ -57,12 +81,15 @@ create_and_fill_model (LokBagPack * bag_pack)
 
 
 static GtkWidget *
-create_view_and_model (LokBagPack * bag_pack)
+create_view_and_model (LokGameWidget * game_widget)
 {
   GtkTreeViewColumn *col;
   GtkCellRenderer *renderer;
   GtkWidget *view;
   GtkTreeModel *model;
+  LokBagPack *bag_pack;
+
+  bag_pack = game_widget->game->hero->bag_pack;
 
   view = gtk_tree_view_new ();
 
@@ -90,7 +117,7 @@ create_view_and_model (LokBagPack * bag_pack)
   gtk_tree_view_column_pack_start (col, renderer, TRUE);
   gtk_tree_view_column_add_attribute (col, renderer, "text", COL_WEIGHT);
 
-  model = create_and_fill_model (bag_pack);
+  model = create_and_fill_model (game_widget);
   gtk_tree_view_set_model (GTK_TREE_VIEW (view), model);
   g_object_unref (model);
   gtk_tree_selection_set_mode (gtk_tree_view_get_selection (
@@ -99,38 +126,57 @@ create_view_and_model (LokBagPack * bag_pack)
   return view;
 }
 
+static GtkWidget *
+lok_game_heros_dialog (GtkWindow * main_app_window)
+{
+  GtkWidget *dialog, *heros_icon_view, *content_area;
+  TArray *heros;
+  LokHero *hero;
+  GtkDialogFlags flags;
+
+  flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
+  dialog = gtk_dialog_new ();
+  heros = lok_hero_create_heros ();
+  heros_icon_view = lok_heros_widget_new (heros, &hero);
+
+  content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+  gtk_container_add (GTK_CONTAINER (content_area), heros_icon_view);
+
+  return dialog;
+}
+
 GtkWidget *
-lok_bag_pack_widget_new (LokBagPack * bag_pack)
+lok_bag_pack_widget_new (LokGameWidget * game_widget)
 {
   GtkWidget *widget;
   GtkWidget *view;
-  GtkWidget *box, *box_buttons;
-  GtkWidget *button_pop;
-  DummyType *dummy;
+  GtkWidget *box;
+  GtkWidget *button_pop, *button_use;
+  GtkWidget *dialog, *content_area;
+  LokBagPack *bag_pack;
+
+  bag_pack = game_widget->game->hero->bag_pack;
 
   widget = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-  view = create_view_and_model (bag_pack);
+  view = create_view_and_model (game_widget);
 
+  dialog = gtk_dialog_new ();
+  content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
 
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
   gtk_box_pack_start (GTK_BOX (box), view, TRUE, TRUE, 1);
 
-  button_pop = gtk_button_new_with_label ("POP");
 
-  box_buttons = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-  gtk_box_pack_start (GTK_BOX (box_buttons), button_pop, TRUE, TRUE, 0);
+  button_pop = gtk_dialog_add_button (GTK_DIALOG (dialog), "pop",
+      RESPONSE_ID_POP);
+  button_use = gtk_dialog_add_button (GTK_DIALOG (dialog), "use",
+      RESPONSE_ID_USE);
 
-  gtk_box_pack_start (GTK_BOX (box), box_buttons, TRUE, TRUE, 0);
-  gtk_container_add (GTK_CONTAINER (widget), box);
+  gtk_container_add (GTK_CONTAINER (content_area), box);
 
-  dummy = malloc (sizeof (DummyType));
-  dummy->bag_pack = bag_pack;
-  dummy->tree_model = gtk_tree_view_get_model (GTK_TREE_VIEW (view));
+  game_widget->bag_pack_tree_model =\
+      gtk_tree_view_get_model (GTK_TREE_VIEW (view));
 
-  g_signal_connect (G_OBJECT (button_pop), "clicked", G_CALLBACK (pop_item_cb),
-      dummy);
 
-  g_signal_connect (G_OBJECT (widget), "destroy", gtk_main_quit, NULL);
-
-  return widget;
+  return dialog;
 }

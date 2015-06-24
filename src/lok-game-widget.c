@@ -2,6 +2,11 @@
 
 static void _attack_cb (GtkWidget * button, LokGameWidget * game_widget);
 static void _ignore_cb (GtkWidget * button, LokGameWidget * game_widget);
+static void _push_bag_pack_cb (GtkWidget * button, LokGameWidget * game_widget);
+static void _insert_belt_cb (GtkWidget * button, LokGameWidget * game_widget);
+
+static void _use_bag_pack_cb (GtkWidget * button, LokGameWidget * game_widget);
+static void _use_belt_cb (GtkWidget * button, LokGameWidget * game_widget);
 
 struct _LokGameWidgetPrivate {
   GtkWidget *heros_dialog;
@@ -56,6 +61,7 @@ lok_game_profile_panel_widget (LokGameWidget * game_widget)
   GtkWidget *details_life_label, *details_level_label;
   GtkWidget *details_life_info, *details_level_info;
   GdkPixbuf *pixbuf_hero, *pixbuf_arm;
+  GtkWidget *button_use_belt, *button_use_bag_pack;
   LokGame *game;
   gint height, width;
   GError *pixbuf_err = NULL;
@@ -92,10 +98,23 @@ lok_game_profile_panel_widget (LokGameWidget * game_widget)
   gtk_grid_attach (GTK_GRID (details), details_level_info, 1, 1, 1, 1);
   gtk_grid_set_column_homogeneous (GTK_GRID (details), TRUE);
 
+  button_use_belt = gtk_button_new_with_label ("use belt");
+  button_use_bag_pack = gtk_button_new_with_label ("use bag pack");
+
+  gtk_widget_set_can_focus (button_use_belt, FALSE);
+  gtk_widget_set_can_focus (button_use_bag_pack, FALSE);
+
+  g_signal_connect (G_OBJECT (button_use_belt), "clicked",
+      G_CALLBACK (_use_belt_cb), game_widget);
+  g_signal_connect (G_OBJECT (button_use_bag_pack), "clicked",
+      G_CALLBACK (_use_bag_pack_cb), game_widget);
+
   gtk_box_pack_start (GTK_BOX (box), player_name, FALSE, FALSE, 15);
   gtk_box_pack_start (GTK_BOX (box), hero_avatar, FALSE, FALSE, 2);
   gtk_box_pack_start (GTK_BOX (box), hero_name, FALSE, FALSE, 10);
   gtk_box_pack_start (GTK_BOX (box), details, FALSE, FALSE, 10);
+  gtk_box_pack_end (GTK_BOX (box), button_use_bag_pack, FALSE, FALSE, 0);
+  gtk_box_pack_end (GTK_BOX (box), button_use_belt, FALSE, FALSE, 0);
 
   gtk_widget_set_size_request (GTK_WIDGET (box), width, height);
 
@@ -175,6 +194,10 @@ lok_game_element_panel_widget (LokGameWidget * game_widget)
   gtk_widget_set_sensitive (options_attack, FALSE);
   gtk_widget_set_sensitive (options_ignore, FALSE);
 
+  g_signal_connect (G_OBJECT (options_insert_belt), "clicked",
+      G_CALLBACK (_insert_belt_cb), game_widget);
+  g_signal_connect (G_OBJECT (options_push_bagpack), "clicked",
+      G_CALLBACK (_push_bag_pack_cb), game_widget);
   g_signal_connect (G_OBJECT (options_attack), "clicked",
       G_CALLBACK (_attack_cb), game_widget);
   g_signal_connect (G_OBJECT (options_ignore), "clicked",
@@ -411,6 +434,43 @@ lok_game_widget_new (GtkApplication * app)
 /* Callbacks */
 
 static void
+_use_bag_pack_cb (GtkWidget * button, LokGameWidget * game_widget)
+{
+}
+
+static void
+_use_belt_cb (GtkWidget * button, LokGameWidget * game_widget)
+{
+}
+
+static void
+_push_bag_pack_cb (GtkWidget * button, LokGameWidget * game_widget)
+{
+/*
+  GtkWidget *dialog;
+  dialog = lok_bag_pack_widget_new (game_widget);
+  gtk_widget_show_all (dialog);
+  lok_bag_pack_widget_dialog_run (dialog, game_widget);
+  lok_set_details_life_label (game_widget);
+  lok_game_widget_update_element_info (game_widget);
+*/
+  LokLevelObject *element_object;
+  element_object =\
+      lok_level_get_level_object (game_widget->game->current_level);
+  lok_bag_pack_add_element (game_widget->game->hero->bag_pack,
+      lok_level_object_get_element (element_object));
+  lok_level_object_free (element_object);
+  lok_level_delete_object (game_widget->game->current_level);
+  lok_game_widget_update_element_info (game_widget);
+}
+
+static void
+_insert_belt_cb (GtkWidget * button, LokGameWidget * game_widget)
+{
+  g_print ("belt\n");
+}
+
+static void
 _attack_cb (GtkWidget * button, LokGameWidget * game_widget)
 {
   LokLevelObject *enemy_object;
@@ -446,7 +506,6 @@ _ignore_cb (GtkWidget * button, LokGameWidget * game_widget)
   LokLevelObject *level_object;
 
   level_object = lok_level_get_level_object (game_widget->game->current_level);
-  lok_level_object_free (level_object);
   lok_level_delete_object (game_widget->game->current_level);
   lok_game_widget_update_element_info (game_widget);
 }
