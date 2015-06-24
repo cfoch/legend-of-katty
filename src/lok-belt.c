@@ -65,6 +65,10 @@ lok_belt_insert_element (LokBelt * belt, int index, LokElement * element)
   LokBeltPocket *belt_pocket;
 
   belt_pocket = lok_belt_get_belt_pocket (belt, index);
+  if (element == NULL) {
+    belt_pocket->element = NULL;
+    return;
+  }
   if (belt_pocket->capacity >= element->weight)
     belt_pocket->element = element;
 }

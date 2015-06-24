@@ -44,15 +44,27 @@ lok_belt_widget_dialog_run (GtkWidget * dialog, LokGameWidget * game_widget)
       gtk_tree_model_get (game_widget->belt_tree_model, &iter,
           COL_NUM_COL, &i,
           -1);
+      g_print ("ACA!\n");
       element = lok_belt_get_element (game_widget->game->hero->belt, i);
-      if (!element)
-        return;
+      g_print ("ACA222!\n");
+      if (!element) {
+        g_print ("No element available\n");
+        break;
+      }
       lok_hero_use_belt (hero, i);
-
+      g_print ("holaa\n");
       break;
     }
     case RESPONSE_ID_DROP:
+    {
+      gint i;
+      gtk_tree_model_get (game_widget->belt_tree_model, &iter,
+          COL_NUM_COL, &i,
+          -1);
+      g_print ("dropping element: %d\n", i);
+      lok_belt_insert_element (game_widget->game->hero->belt, i, NULL);
       break;
+    }
     case RESPONSE_ID_SAVE:
     {
       LokLevelObject *level_object;
@@ -62,7 +74,7 @@ lok_belt_widget_dialog_run (GtkWidget * dialog, LokGameWidget * game_widget)
 
       level_object = lok_level_get_level_object (game_widget->game->current_level);
       if (!level_object)
-        return;
+        break;
 
       element = LOK_ELEMENT (level_object->data);
       element_type = lok_element_get_type (element);
@@ -73,10 +85,11 @@ lok_belt_widget_dialog_run (GtkWidget * dialog, LokGameWidget * game_widget)
 
       lok_belt_insert_element (game_widget->game->hero->belt, i, element);
       lok_level_delete_object (game_widget->game->current_level);
-      lok_game_widget_update_element_info (game_widget);
       break;
     }
   }
+  lok_game_widget_update_element_info (game_widget);
+  lok_set_details_arm (game_widget);
   gtk_widget_destroy (dialog);
 }
 
