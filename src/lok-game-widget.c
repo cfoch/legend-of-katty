@@ -183,6 +183,9 @@ lok_game_profile_panel_widget (LokGameWidget * game_widget)
 
   game_widget->priv->button_use_belt = button_use_belt;
   game_widget->priv->button_use_bag_pack = button_use_bag_pack;
+  game_widget->priv->hand_arm_name_info = hand_arm_name_info;
+  game_widget->priv->hand_arm_points_info = hand_arm_points_info;
+  game_widget->priv->hand_arm_weight_info = hand_arm_weight_info;
 
   g_object_unref (G_OBJECT (pixbuf_hero));
 
