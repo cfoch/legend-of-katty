@@ -25,7 +25,7 @@ LokLevelObject * lok_level_get_level_object (LokLevel * level);
 LokLevelTypeDecision lok_level_random_type (int min, int max);
 void lok_level_set_matrix_random (LokLevel * level,int* quantity_enemy, int* quantity_element);
 void lok_level_set_boss (LokLevel * level);
-void lok_level_delete_object (LokLevel * level, int xpos, int ypos);
+void lok_level_delete_object (LokLevel * level);
 
 
 #endif /* __LOK_LEVEL_H__ */

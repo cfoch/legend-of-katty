@@ -25,4 +25,6 @@ int lok_enemy_get_attack_points (LokEnemy* enemy);
 
 void lok_enemy_free(LokEnemy* enemy);
 
+void lok_enemy_attack (LokEnemy * enemy, LokHero * hero);
+
 #endif /* __LOK_ENEMY_H__ */

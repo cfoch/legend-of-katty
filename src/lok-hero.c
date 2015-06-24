@@ -141,3 +141,19 @@ lok_hero_create_heros ()
   return heros;
 }
 
+void
+lok_hero_attack (LokHero * hero, LokLevelObject * enemy_object)
+{
+	if (enemy_object == NULL)
+		return;
+	if (hero->hand != NULL)
+		enemy_object->life_points = enemy_object->life_points + hero->hand->points;
+}
+
+TBoolean
+lok_hero_is_alive (LokHero * hero)
+{
+	if (hero == NULL)
+		return FALSE;
+  return hero->life_points > 0;
+}

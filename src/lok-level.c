@@ -142,13 +142,7 @@ lok_level_set_boss (LokLevel * level)
 }
 
 void
-lok_level_delete_object (LokLevel * level, int xpos, int ypos)
+lok_level_delete_object (LokLevel * level)
 {
-	t_matrix_insert (level->matrix, NULL, xpos , ypos);
+	t_matrix_insert (level->matrix, NULL, level->hero_xpos , level->hero_ypos);
 }
-
-
-
-
-
-

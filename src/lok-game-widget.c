@@ -1,5 +1,8 @@
 #include "lok.h"
 
+static void _attack_cb (GtkWidget * button, LokGameWidget * game_widget);
+static void _ignore_cb (GtkWidget * button, LokGameWidget * game_widget);
+
 struct _LokGameWidgetPrivate {
   GtkWidget *heros_dialog;
   GtkWidget *game_widget;
@@ -17,6 +20,13 @@ struct _LokGameWidgetPrivate {
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (LokGameWidget, lok_game_widget, GTK_TYPE_APPLICATION_WINDOW)
+
+static void
+lok_set_details_life_label (LokGameWidget * game_widget)
+{
+  gtk_label_set_text (GTK_LABEL (game_widget->priv->details_life_info),
+      g_strdup_printf ("%d", game_widget->game->hero->life_points));
+}
 
 static GtkWidget *
 lok_game_screen_widget (LokGameWidget * game_widget)
@@ -165,6 +175,11 @@ lok_game_element_panel_widget (LokGameWidget * game_widget)
   gtk_widget_set_sensitive (options_attack, FALSE);
   gtk_widget_set_sensitive (options_ignore, FALSE);
 
+  g_signal_connect (G_OBJECT (options_attack), "clicked",
+      G_CALLBACK (_attack_cb), game_widget);
+  g_signal_connect (G_OBJECT (options_ignore), "clicked",
+      G_CALLBACK (_ignore_cb), game_widget);
+
   gtk_widget_set_can_focus (options_push_bagpack, FALSE);
   gtk_widget_set_can_focus (options_insert_belt, FALSE);
   gtk_widget_set_can_focus (options_attack, FALSE);
@@ -246,7 +261,7 @@ lok_game_widget_update_element_info (LokGameWidget * game_widget)
 			type_info = strdup ("Enemy");
 			name_info = g_strdup (enemy->name);
 			points_info = g_strdup_printf("%d", enemy->attack_points);
-			weight_info = g_strdup_printf("%d", enemy->life_points);
+			weight_info = g_strdup_printf("%d", level_object->life_points);
 
 			img_path = enemy->img;
 
@@ -254,9 +269,13 @@ lok_game_widget_update_element_info (LokGameWidget * game_widget)
       gtk_widget_set_sensitive (game_widget->priv->options_push_bagpack, FALSE);
       gtk_widget_set_sensitive (game_widget->priv->options_insert_belt, FALSE);
       gtk_widget_set_sensitive (game_widget->priv->options_attack, TRUE);
-      gtk_widget_set_sensitive (game_widget->priv->options_ignore, TRUE);
-
+      gtk_widget_set_sensitive (game_widget->priv->options_ignore, FALSE);
     }
+  } else {
+    gtk_widget_set_sensitive (game_widget->priv->options_push_bagpack, FALSE);
+    gtk_widget_set_sensitive (game_widget->priv->options_insert_belt, FALSE);
+    gtk_widget_set_sensitive (game_widget->priv->options_attack, FALSE);
+    gtk_widget_set_sensitive (game_widget->priv->options_ignore, FALSE);
   }
 
   gtk_label_set_text (
@@ -387,4 +406,47 @@ lok_game_widget_new (GtkApplication * app)
   }
 
   return widget;
+}
+
+/* Callbacks */
+
+static void
+_attack_cb (GtkWidget * button, LokGameWidget * game_widget)
+{
+  LokLevelObject *enemy_object;
+  LokEnemy *enemy;
+  LokHero *hero;
+
+  enemy_object = lok_level_get_level_object (game_widget->game->current_level);
+
+  if (!enemy_object)
+    return;
+
+  enemy = lok_level_object_get_enemy (enemy_object);
+
+  hero = game_widget->game->hero;
+
+  lok_hero_attack (hero, enemy_object);
+  if (lok_level_object_enemy_is_alive (enemy_object)) {
+    lok_enemy_attack (enemy, hero);
+    if (!lok_hero_is_alive (hero))
+      /* TODO: Print message of GAME OVER */
+      return;
+  } else {
+    lok_level_object_free (enemy_object);
+    lok_level_delete_object (game_widget->game->current_level);
+  }
+  lok_set_details_life_label (game_widget);
+  lok_game_widget_update_element_info (game_widget);
+}
+
+static void
+_ignore_cb (GtkWidget * button, LokGameWidget * game_widget)
+{
+  LokLevelObject *level_object;
+
+  level_object = lok_level_get_level_object (game_widget->game->current_level);
+  lok_level_object_free (level_object);
+  lok_level_delete_object (game_widget->game->current_level);
+  lok_game_widget_update_element_info (game_widget);
 }

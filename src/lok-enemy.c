@@ -81,3 +81,11 @@ lok_enemy_free(LokEnemy* enemy)
 {
 	free(enemy);
 }
+
+void
+lok_enemy_attack (LokEnemy * enemy, LokHero * hero)
+{
+	if ((enemy == NULL) || (hero == NULL))
+		return;
+	hero->life_points = hero->life_points - lok_enemy_get_attack_points (enemy);
+}
