@@ -17,7 +17,6 @@ lok_hero_actor_new (int index)
   hero_actor->name = LOK_HERO_ACTORS[index].name;
   hero_actor->profile_img_path = LOK_HERO_ACTORS[index].profile_img_path;
   hero_actor->actor_img_path = LOK_HERO_ACTORS[index].actor_img_path;
-
   return hero_actor;
 }
 

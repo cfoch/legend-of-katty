@@ -45,6 +45,9 @@ struct _LokGameWidgetClass
 /* used by LOK_TYPE_GAME_WIDGET */
 GType lok_game_widget_get_type (void);
 
+void lok_set_details_arm (LokGameWidget * game_widget);
+
+
 LokGameWidget * lok_game_widget_new (GtkApplication * app);
 void lok_game_widget_update_element_info (LokGameWidget * game_widget);
 

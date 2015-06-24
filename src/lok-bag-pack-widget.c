@@ -45,6 +45,7 @@ lok_bag_pack_widget_dialog_run (GtkWidget * dialog, LokGameWidget * game_widget)
       lok_hero_use_bag_pack (game_widget->game->hero);
       _pop_tree_model (game_widget);
       lok_level_delete_object (game_widget->game->current_level);
+			lok_set_details_arm (game_widget);
       break;
     default:
       break;
@@ -102,7 +103,7 @@ create_view_and_model (LokGameWidget * game_widget)
   /* Column 0 */
   renderer = gtk_cell_renderer_text_new ();
   col = gtk_tree_view_column_new ();
-  gtk_tree_view_column_set_title (col, "type");
+  gtk_tree_view_column_set_title (col, "Type");
   gtk_tree_view_append_column(GTK_TREE_VIEW (view), col);
   gtk_tree_view_column_pack_start (col, renderer, TRUE);
   gtk_tree_view_column_add_attribute (col, renderer, "text", COL_TYPE);
@@ -110,7 +111,7 @@ create_view_and_model (LokGameWidget * game_widget)
   /* Column 1 */
   renderer = gtk_cell_renderer_text_new ();
   col = gtk_tree_view_column_new ();
-  gtk_tree_view_column_set_title (col, "name");
+  gtk_tree_view_column_set_title (col, "Name");
   gtk_tree_view_append_column(GTK_TREE_VIEW (view), col);
   gtk_tree_view_column_pack_start (col, renderer, TRUE);
   gtk_tree_view_column_add_attribute (col, renderer, "text", COL_NAME);
@@ -118,7 +119,7 @@ create_view_and_model (LokGameWidget * game_widget)
   /* Column 2 */
   renderer = gtk_cell_renderer_text_new ();
   col = gtk_tree_view_column_new ();
-  gtk_tree_view_column_set_title (col, "points of attack");
+  gtk_tree_view_column_set_title (col, "Points");
   gtk_tree_view_append_column(GTK_TREE_VIEW (view), col);
   gtk_tree_view_column_pack_start (col, renderer, TRUE);
   gtk_tree_view_column_add_attribute (col, renderer, "text", COL_POINTS);
@@ -126,7 +127,7 @@ create_view_and_model (LokGameWidget * game_widget)
   /* Column 3 */
   renderer = gtk_cell_renderer_text_new ();
   col = gtk_tree_view_column_new ();
-  gtk_tree_view_column_set_title (col, "weigth");
+  gtk_tree_view_column_set_title (col, "Weigth");
   gtk_tree_view_append_column(GTK_TREE_VIEW (view), col);
   gtk_tree_view_column_pack_start (col, renderer, TRUE);
   gtk_tree_view_column_add_attribute (col, renderer, "text", COL_WEIGHT);
@@ -181,9 +182,9 @@ lok_bag_pack_widget_new (LokGameWidget * game_widget)
   gtk_box_pack_start (GTK_BOX (box), view, TRUE, TRUE, 1);
 
 
-  button_pop = gtk_dialog_add_button (GTK_DIALOG (dialog), "pop",
+  button_pop = gtk_dialog_add_button (GTK_DIALOG (dialog), "POP",
       RESPONSE_ID_POP);
-  button_use = gtk_dialog_add_button (GTK_DIALOG (dialog), "use",
+  button_use = gtk_dialog_add_button (GTK_DIALOG (dialog), "USE",
       RESPONSE_ID_USE);
 
   gtk_container_add (GTK_CONTAINER (content_area), box);

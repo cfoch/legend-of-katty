@@ -61,8 +61,5 @@ lok_game_set_new_level (LokGame * game)
 {
 	/*Ignore this variables, just for fun*/
 	/*TODO: Hay que arreglar esto*/
-	int a = 0;
-	int b = 0;
-
-	lok_level_set_matrix_random (game->current_level, &a, &b);
+	lok_level_set_matrix_random (game->current_level);
 }

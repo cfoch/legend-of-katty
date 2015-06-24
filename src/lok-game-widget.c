@@ -11,8 +11,12 @@ static void _use_belt_cb (GtkWidget * button, LokGameWidget * game_widget);
 struct _LokGameWidgetPrivate {
   GtkWidget *heros_dialog;
   GtkWidget *game_widget;
+	GtkWidget *hand_arm_name_info;
+	GtkWidget *hand_arm_points_info;
+	GtkWidget *hand_arm_weight_info;
   GtkWidget *details_level_label;
   GtkWidget *details_life_info;
+	GtkWidget *details_count_enemies_info;
   GtkWidget *element_avatar;
   GtkWidget *details_element_type_info;
   GtkWidget *details_element_name_info;
@@ -31,6 +35,32 @@ lok_set_details_life_label (LokGameWidget * game_widget)
 {
   gtk_label_set_text (GTK_LABEL (game_widget->priv->details_life_info),
       g_strdup_printf ("%d", game_widget->game->hero->life_points));
+}
+
+static void
+lok_set_details_count_enemies_info (LokGameWidget * game_widget)
+{
+  gtk_label_set_text (GTK_LABEL (game_widget->priv->details_count_enemies_info),
+      g_strdup_printf ("%d / %d",	game_widget->game->current_level->count_enemies, game_widget->game->current_level->total_enemies));
+}
+
+static void
+lok_set_details_level_label (LokGameWidget * game_widget)
+{
+	 gtk_label_set_text (GTK_LABEL (game_widget->priv->details_level_label),
+      g_strdup_printf ("%d / %d",
+      game_widget->game->count_levels,game_widget->game->max_levels));
+}
+
+void
+lok_set_details_arm (LokGameWidget * game_widget)
+{
+	gtk_label_set_text (GTK_LABEL (game_widget->priv->hand_arm_name_info),
+	  game_widget->game->hero->hand->name);
+	gtk_label_set_text (GTK_LABEL (game_widget->priv->hand_arm_points_info),
+		g_strdup_printf ("%d", game_widget->game->hero->hand->points));
+	gtk_label_set_text (GTK_LABEL(game_widget->priv->hand_arm_weight_info),
+		g_strdup_printf ("%d", game_widget->game->hero->hand->weight));
 }
 
 static GtkWidget *
@@ -58,8 +88,11 @@ lok_game_profile_panel_widget (LokGameWidget * game_widget)
 {
   GtkWidget *box;
   GtkWidget *player_name, *hero_avatar, *hero_name, *life, *details;
+	GtkWidget *hand_arm_name, *hand_arm_points, *hand_arm_weight;
+	GtkWidget *hand_arm_name_info, *hand_arm_points_info, *hand_arm_weight_info;
   GtkWidget *details_life_label, *details_level_label;
   GtkWidget *details_life_info, *details_level_info;
+	GtkWidget *details_cenemies_label, *details_cenemies_info;
   GdkPixbuf *pixbuf_hero, *pixbuf_arm;
   GtkWidget *button_use_belt, *button_use_bag_pack;
   LokGame *game;
@@ -76,11 +109,11 @@ lok_game_profile_panel_widget (LokGameWidget * game_widget)
       &pixbuf_err);
 
   /* Creating widgets */
-  box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 5);
+  box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 7);
 
   player_name = gtk_label_new (NULL);
   gtk_label_set_markup (GTK_LABEL (player_name),
-      "<span font_weight=\"bold\" font_size=\"x-large\">TODO</span>"); 
+      "<span font_weight=\"bold\" font_size=\"x-large\">HERO</span>"); 
   hero_avatar = gtk_image_new_from_pixbuf (pixbuf_hero);
   hero_name = gtk_label_new (game->hero->actor->name);
 
@@ -89,17 +122,35 @@ lok_game_profile_panel_widget (LokGameWidget * game_widget)
   details_level_label = gtk_label_new ("Level");
   details_life_info =\
       gtk_label_new (g_strdup_printf ("%d", game->hero->life_points));
+	hand_arm_name = gtk_label_new ("Name of the arm");
+	hand_arm_name_info = gtk_label_new (game->hero->hand->name);
+	hand_arm_points = gtk_label_new ("Points Attack");
+	hand_arm_points_info = gtk_label_new (g_strdup_printf ("%d", game->hero->hand->points));
+	hand_arm_weight = gtk_label_new ("Weight");
+	hand_arm_weight_info = gtk_label_new (g_strdup_printf ("%d", game->hero->hand->weight));
+
   details_level_info = gtk_label_new (g_strdup_printf ("%d / %d",
       game->count_levels, game->max_levels));
+	details_cenemies_label = gtk_label_new ("Enemies");
+	details_cenemies_info =\
+		 gtk_label_new (g_strdup_printf ("%d / %d",	game->current_level->count_enemies, game->current_level->total_enemies));
 
   gtk_grid_attach (GTK_GRID (details), details_life_label, 0, 0, 1, 1);
   gtk_grid_attach (GTK_GRID (details), details_life_info, 1, 0, 1, 1);
-  gtk_grid_attach (GTK_GRID (details), details_level_label, 0, 1, 1, 1);
-  gtk_grid_attach (GTK_GRID (details), details_level_info, 1, 1, 1, 1);
+	gtk_grid_attach (GTK_GRID (details), hand_arm_name, 0, 1, 1, 1);
+	gtk_grid_attach (GTK_GRID (details), hand_arm_name_info, 1, 1, 1, 1);
+	gtk_grid_attach (GTK_GRID (details), hand_arm_points, 0, 2, 1, 1);
+	gtk_grid_attach (GTK_GRID (details), hand_arm_points_info , 1, 2, 1, 1);
+	gtk_grid_attach (GTK_GRID (details), hand_arm_weight , 0, 3, 1, 1);
+	gtk_grid_attach (GTK_GRID (details), hand_arm_weight_info, 1, 3, 1, 1);
+  gtk_grid_attach (GTK_GRID (details), details_level_label, 0, 4, 1, 1);
+  gtk_grid_attach (GTK_GRID (details), details_level_info, 1, 4, 1, 1);
+	gtk_grid_attach (GTK_GRID (details), details_cenemies_label, 0, 5, 1, 1);
+  gtk_grid_attach (GTK_GRID (details), details_cenemies_info, 1, 5, 1, 1);
   gtk_grid_set_column_homogeneous (GTK_GRID (details), TRUE);
 
-  button_use_belt = gtk_button_new_with_label ("use belt");
-  button_use_bag_pack = gtk_button_new_with_label ("use bag pack");
+  button_use_belt = gtk_button_new_with_label ("Open Belt");
+  button_use_bag_pack = gtk_button_new_with_label ("Open Bag Pack");
 
   gtk_widget_set_can_focus (button_use_belt, FALSE);
   gtk_widget_set_can_focus (button_use_bag_pack, FALSE);
@@ -120,6 +171,7 @@ lok_game_profile_panel_widget (LokGameWidget * game_widget)
 
   game_widget->priv->details_level_label = details_level_info;
   game_widget->priv->details_life_info = details_life_info;
+	game_widget->priv->details_count_enemies_info = details_cenemies_info;
 
   g_object_unref (G_OBJECT (pixbuf_hero));
 
@@ -497,6 +549,12 @@ _attack_cb (GtkWidget * button, LokGameWidget * game_widget)
   } else {
     lok_level_object_free (enemy_object);
     lok_level_delete_object (game_widget->game->current_level);
+		(game_widget->game->current_level->count_enemies)--;
+		if (lok_level_enemies_killed(game_widget->game->current_level)){
+			lok_level_set_next_level(game_widget->game->current_level);
+			lok_set_details_level_label (game_widget);
+		}
+		lok_set_details_count_enemies_info(game_widget);
   }
   lok_set_details_life_label (game_widget);
   lok_game_widget_update_element_info (game_widget);
