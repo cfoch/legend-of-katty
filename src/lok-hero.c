@@ -80,33 +80,37 @@ lok_hero_pop_bag_pack (LokHero * hero)
   lok_bag_pack_pop_element (hero->bag_pack);
 }
 
-/*
-void
+
+TBoolean
 lok_hero_use_belt (LokHero * hero, int index)
 {
   LokElement *element;
   element = lok_belt_get_element (hero->belt, index);
   if (!element)
-    return;
+    return FALSE;
   if (lok_element_get_type (element) == LOK_ELEMENT_TYPE_POTION) {
     lok_hero_drink_potion (hero, element);
     lok_belt_remove_element (hero->belt, index);
+    return TRUE;
   } else {
     if (hero->hand == NULL) {
       lok_belt_remove_element (hero->belt, index);
       hero->hand = element;
+      return TRUE;
     } else { 
       int capacity_belt;
       capacity_belt = lok_belt_get_belt_pocket (hero->belt, index)->capacity;
       if (capacity_belt >= hero->hand->weight) {
         lok_belt_remove_element (hero->belt, index);
-        lok_belt_insert_element (hero->belt, hero->hand, index);
+        lok_belt_insert_element (hero->belt, index, LOK_ELEMENT (hero->hand));
         hero->hand = element;
+        return TRUE;
       }
     }
   }
+  return FALSE;
 }
-*/
+
 
 void
 lok_hero_remove_element_belt (LokHero * hero, int index)

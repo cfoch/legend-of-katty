@@ -31,6 +31,7 @@ struct _LokGameWidget
   LokGame *game;
   GtkTreeModel *bag_pack_tree_model;
   GtkTreeModel *belt_tree_model;
+  GtkTreeView *belt_tree_view;
 };
 
 struct _LokGameWidgetClass
