@@ -160,3 +160,9 @@ lok_hero_is_alive (LokHero * hero)
 		return FALSE;
   return hero->life_points > 0;
 }
+
+void
+lok_hero_restore (LokHero * hero)
+{
+  hero->life_points = LOK_HERO_MAX_LIFE_POINTS;
+}

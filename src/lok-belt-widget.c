@@ -23,7 +23,6 @@ lok_belt_widget_dialog_run (GtkWidget * dialog, LokGameWidget * game_widget)
 {
   gboolean can_select;
   gint result;
-  LokHero *hero;
   GtkTreeIter iter;
   GtkTreeSelection *selection;
 
@@ -44,14 +43,12 @@ lok_belt_widget_dialog_run (GtkWidget * dialog, LokGameWidget * game_widget)
       gtk_tree_model_get (game_widget->belt_tree_model, &iter,
           COL_NUM_COL, &i,
           -1);
-      g_print ("ACA!\n");
       element = lok_belt_get_element (game_widget->game->hero->belt, i);
-      g_print ("ACA222!\n");
       if (!element) {
         g_print ("No element available\n");
         break;
       }
-      lok_hero_use_belt (hero, i);
+      lok_hero_use_belt (game_widget->game->hero, i);
       g_print ("holaa\n");
       break;
     }
@@ -88,6 +85,7 @@ lok_belt_widget_dialog_run (GtkWidget * dialog, LokGameWidget * game_widget)
       break;
     }
   }
+  lok_set_details_life_label (game_widget);
   lok_game_widget_update_element_info (game_widget);
   lok_set_details_arm (game_widget);
   gtk_widget_destroy (dialog);

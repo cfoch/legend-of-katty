@@ -51,5 +51,6 @@ void lok_set_details_arm (LokGameWidget * game_widget);
 
 LokGameWidget * lok_game_widget_new (GtkApplication * app);
 void lok_game_widget_update_element_info (LokGameWidget * game_widget);
+void lok_set_details_life_label (LokGameWidget * game_widget);
 
 #endif /* __LOK_GAME_WIDGET_H__ */

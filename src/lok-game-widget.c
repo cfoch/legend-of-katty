@@ -26,11 +26,13 @@ struct _LokGameWidgetPrivate {
   GtkWidget *options_insert_belt;
   GtkWidget *options_attack;
   GtkWidget *options_ignore;
+  GtkWidget *button_use_belt;
+  GtkWidget *button_use_bag_pack;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (LokGameWidget, lok_game_widget, GTK_TYPE_APPLICATION_WINDOW)
 
-static void
+void
 lok_set_details_life_label (LokGameWidget * game_widget)
 {
   gtk_label_set_text (GTK_LABEL (game_widget->priv->details_life_info),
@@ -172,6 +174,9 @@ lok_game_profile_panel_widget (LokGameWidget * game_widget)
   game_widget->priv->details_level_label = details_level_info;
   game_widget->priv->details_life_info = details_life_info;
 	game_widget->priv->details_count_enemies_info = details_cenemies_info;
+
+  game_widget->priv->button_use_belt = button_use_belt;
+  game_widget->priv->button_use_bag_pack = button_use_bag_pack;
 
   g_object_unref (G_OBJECT (pixbuf_hero));
 
@@ -521,7 +526,7 @@ _push_bag_pack_cb (GtkWidget * button, LokGameWidget * game_widget)
 static void
 _insert_belt_cb (GtkWidget * button, LokGameWidget * game_widget)
 {
-  g_print ("belt\n");
+  _use_belt_cb (button, game_widget);
 }
 
 static void
@@ -543,19 +548,21 @@ _attack_cb (GtkWidget * button, LokGameWidget * game_widget)
   lok_hero_attack (hero, enemy_object);
   if (lok_level_object_enemy_is_alive (enemy_object)) {
     lok_enemy_attack (enemy, hero);
-    if (!lok_hero_is_alive (hero))
-      /* TODO: Print message of GAME OVER */
-      return;
+    if (!lok_hero_is_alive (hero)){
+      game_widget->game->count_levels = 0;
+      lok_level_set_next_level(game_widget->game->current_level);
+      lok_hero_restore (game_widget->game->hero);
+    }
   } else {
     lok_level_object_free (enemy_object);
     lok_level_delete_object (game_widget->game->current_level);
 		(game_widget->game->current_level->count_enemies)--;
-		if (lok_level_enemies_killed(game_widget->game->current_level)){
+		if (lok_level_enemies_killed(game_widget->game->current_level))
 			lok_level_set_next_level(game_widget->game->current_level);
-			lok_set_details_level_label (game_widget);
-		}
-		lok_set_details_count_enemies_info(game_widget);
+				
   }
+  lok_set_details_count_enemies_info(game_widget);
+  lok_set_details_level_label (game_widget);
   lok_set_details_life_label (game_widget);
   lok_game_widget_update_element_info (game_widget);
 }
