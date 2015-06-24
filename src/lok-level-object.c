@@ -50,8 +50,6 @@ lok_level_object_is_element (LokLevelObject * object)
 void
 lok_level_object_free (LokLevelObject * object)
 {
-  if (lok_level_object_is_element (object))
-		lok_element_free (object->data);
 	free (object);
 }
 

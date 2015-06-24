@@ -436,6 +436,12 @@ lok_game_widget_new (GtkApplication * app)
 static void
 _use_bag_pack_cb (GtkWidget * button, LokGameWidget * game_widget)
 {
+  GtkWidget *dialog;
+  dialog = lok_bag_pack_widget_new (game_widget);
+  gtk_widget_show_all (dialog);
+  lok_bag_pack_widget_dialog_run (dialog, game_widget);
+  lok_set_details_life_label (game_widget);
+  lok_game_widget_update_element_info (game_widget);
 }
 
 static void
@@ -446,14 +452,6 @@ _use_belt_cb (GtkWidget * button, LokGameWidget * game_widget)
 static void
 _push_bag_pack_cb (GtkWidget * button, LokGameWidget * game_widget)
 {
-/*
-  GtkWidget *dialog;
-  dialog = lok_bag_pack_widget_new (game_widget);
-  gtk_widget_show_all (dialog);
-  lok_bag_pack_widget_dialog_run (dialog, game_widget);
-  lok_set_details_life_label (game_widget);
-  lok_game_widget_update_element_info (game_widget);
-*/
   LokLevelObject *element_object;
   element_object =\
       lok_level_get_level_object (game_widget->game->current_level);

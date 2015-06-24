@@ -3,7 +3,8 @@
 enum
 {
   COL_NAME = 0,
-  COL_ATTACK_POINTS,
+  COL_TYPE,
+  COL_POINTS,
   COL_WEIGHT,
   NUM_COLS
 };
@@ -61,8 +62,8 @@ create_and_fill_model (LokGameWidget * game_widget)
 
   bag_pack = game_widget->game->hero->bag_pack;
 
-  list_store = gtk_list_store_new (NUM_COLS, G_TYPE_STRING, G_TYPE_INT,
-      G_TYPE_INT);
+  list_store = gtk_list_store_new (NUM_COLS,
+      G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT, G_TYPE_INT);
 
   if (!bag_pack)
     return GTK_TREE_MODEL (list_store);
@@ -72,8 +73,12 @@ create_and_fill_model (LokGameWidget * game_widget)
 
     element = LOK_ELEMENT (l->data);
     gtk_list_store_append (list_store, &toplevel);
-    gtk_list_store_set (list_store, &toplevel, COL_NAME, element->name,
-      COL_ATTACK_POINTS, element->points, COL_WEIGHT, element->weight, -1);
+    gtk_list_store_set (list_store, &toplevel,
+        COL_TYPE, lok_element_type_to_string (lok_element_get_type (element)),
+        COL_NAME, element->name,
+        COL_POINTS, element->points,
+        COL_WEIGHT, element->weight,
+        -1);
   }
 
   return GTK_TREE_MODEL (list_store);
@@ -93,6 +98,15 @@ create_view_and_model (LokGameWidget * game_widget)
 
   view = gtk_tree_view_new ();
 
+
+  /* Column 0 */
+  renderer = gtk_cell_renderer_text_new ();
+  col = gtk_tree_view_column_new ();
+  gtk_tree_view_column_set_title (col, "type");
+  gtk_tree_view_append_column(GTK_TREE_VIEW (view), col);
+  gtk_tree_view_column_pack_start (col, renderer, TRUE);
+  gtk_tree_view_column_add_attribute (col, renderer, "text", COL_TYPE);
+
   /* Column 1 */
   renderer = gtk_cell_renderer_text_new ();
   col = gtk_tree_view_column_new ();
@@ -107,7 +121,7 @@ create_view_and_model (LokGameWidget * game_widget)
   gtk_tree_view_column_set_title (col, "points of attack");
   gtk_tree_view_append_column(GTK_TREE_VIEW (view), col);
   gtk_tree_view_column_pack_start (col, renderer, TRUE);
-  gtk_tree_view_column_add_attribute (col, renderer, "text", COL_ATTACK_POINTS);
+  gtk_tree_view_column_add_attribute (col, renderer, "text", COL_POINTS);
 
   /* Column 3 */
   renderer = gtk_cell_renderer_text_new ();
