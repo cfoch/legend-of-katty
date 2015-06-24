@@ -2,9 +2,9 @@
 
 enum
 {
-  COL_NAME = 0,
-  COL_CAPACITY,
+  COL_CAPACITY = 0,
   COL_TYPE,
+  COL_NAME,
   COL_POINTS,
   COL_WEIGHT,
   COL_AVAILABLE,
@@ -126,7 +126,7 @@ create_view_and_model (LokGameWidget * game_widget)
   gtk_tree_view_append_column(GTK_TREE_VIEW (view), col);
   gtk_tree_view_column_pack_start (col, renderer, TRUE);
   gtk_tree_view_column_add_attribute (col, renderer, "text", COL_WEIGHT);
-  g_print ("HOLA\n");
+
   model = create_and_fill_model (game_widget);
   gtk_tree_view_set_model (GTK_TREE_VIEW (view), model);
   g_object_unref (model);
