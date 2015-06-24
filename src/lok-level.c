@@ -1,7 +1,5 @@
 #include "lok.h"
 
-#define LOK_LEVEL_OBJECT(x)                         (LokLevelObject *) x
-
 #define LOK_LEVEL_DEFAULT_MATRIX_WIDTH              8
 #define LOK_LEVEL_DEFAULT_MATRIX_HEIGHT             8
 
@@ -24,30 +22,19 @@ lok_level_new (LokGame * game)
 LokLevelObject *
 lok_level_get_level_object (LokLevel * level)
 {
-  tpointer object = NULL;
+  LokLevelObject *object = NULL;
   object = t_matrix_get (level->matrix, level->hero_xpos, level->hero_ypos);
-  return LOK_LEVEL_OBJECT (object);
+  return object;
 }
+
 void
 lok_level_init_test (LokLevel * level)
 {
-  LokElement *arm1, *potion1;
-  LokLevelObject *object_arm1, *object_potion1;
-
-  arm1 = t_array_index (level->game->available_arms, 0);
-  potion1 = t_array_index (level->game->available_potions, 0);
-
-  object_arm1 = lok_level_object_new (arm1, LOK_LEVEL_OBJECT_TYPE_ELEMENT);
-  object_potion1 = lok_level_object_new (potion1,
-      LOK_LEVEL_OBJECT_TYPE_ELEMENT);
-
-  printf ("POTION is element: %d\n", lok_level_object_is_element (object_potion1));
-  printf ("POTION: %s\n", lok_level_object_get_element (object_arm1)->name);
-
-  t_matrix_insert (level->matrix, level->game->hero, level->hero_xpos,
-      level->hero_ypos);
-  t_matrix_insert (level->matrix, object_arm1, 5, 0);
-  t_matrix_insert (level->matrix, object_potion1, 0, 5);
+	/*Variables para probar*/	
+	int a = 0;
+	int b = 0;
+	lok_level_set_matrix_random  (level,&a, &b);
+	
 }
 
 void
@@ -73,9 +60,95 @@ lok_level_move_hero (LokLevel * level, LokDirection direction)
   }
 }
 
+LokLevelTypeDecision
+lok_level_random_type (int min, int max)
+{
+	int random_num = t_random_int(min,max);
+	if (random_num < (55*max/100+min))
+		return LOK_LEVEL_TYPE_NULL;
+	else if (random_num < (70*max/100 + min))
+		return LOK_LEVEL_TYPE_POTION;
+	else if (random_num < (80*max/100 + min))
+		return LOK_LEVEL_TYPE_ARM;
+	else
+		return LOK_LEVEL_TYPE_ENEMY;
+}
+
+
 void
-lok_level_init_random (LokLevel * level)
+lok_level_set_matrix_random  (LokLevel * level,int* quantity_enemy, int* quantity_element)
 {
   /* TODO */
   /* complete */
+	int i,j;
+	int random_potion;
+	LokLevelTypeDecision random_type;
+	tpointer *data;
+	LokLevelObject *object_data;
+
+	*quantity_enemy = 0;
+	*quantity_element = 0;
+	
+	for (i=0;i< LOK_LEVEL_DEFAULT_MATRIX_WIDTH; i++)
+		for (j=0;j< LOK_LEVEL_DEFAULT_MATRIX_HEIGHT;j++){
+			/*TODO: Get a const for the max value for the function lok_level_random_type */
+			random_type = lok_level_random_type (1, 100000);
+			/*The first block has to be empty*/
+			if (i==0 && j==0)
+				random_type = LOK_LEVEL_TYPE_NULL;
+			/*Para probar sin enemigos
+			if (random_type == LOK_LEVEL_TYPE_ENEMY)
+				random_type = LOK_LEVEL_TYPE_NULL;
+			/*End test*/
+			switch (random_type){
+				case LOK_LEVEL_TYPE_NULL:
+					//Pass, don't do anything, null is already there
+					break;
+				case LOK_LEVEL_TYPE_POTION:
+					/*TODO: Define a const for MAX_QUANTIY_POTION*/
+					random_potion = t_random_int(1,6);
+					data = t_array_index (level->game->available_potions, random_potion - 1);
+					object_data = lok_level_object_new (data, LOK_LEVEL_OBJECT_TYPE_ELEMENT);
+					t_matrix_insert (level->matrix, object_data, i, j);
+					(*quantity_element)++;
+					//printf ("POTION: %s\n", lok_level_object_get_element (object_data)->name);
+					break;
+				case LOK_LEVEL_TYPE_ARM:
+					data = t_array_index (level->game->available_arms, level->game->count_levels - 1);
+					object_data = lok_level_object_new (data, LOK_LEVEL_OBJECT_TYPE_ELEMENT);
+					t_matrix_insert (level->matrix, object_data, i, j);
+					(*quantity_element)++;
+					//printf ("ARM: %s\n", lok_level_object_get_element (object_data)->name);
+					break;
+				case LOK_LEVEL_TYPE_ENEMY:
+					data = t_array_index (level->game->available_monsters, level->game->count_levels - 1);
+					object_data = lok_level_object_new (data, LOK_LEVEL_OBJECT_TYPE_ENEMY);
+					t_matrix_insert (level->matrix,object_data, i, j);
+					(*quantity_enemy)++;
+					break;
+				default:
+					break;
+			}
+		}
 }
+
+void
+lok_level_set_boss (LokLevel * level)
+{
+	tpointer data;
+
+	data =  t_array_index (level->game->available_monsters, level->game->count_levels);
+	t_matrix_insert (level->matrix, data, LOK_LEVEL_DEFAULT_MATRIX_WIDTH - 1, LOK_LEVEL_DEFAULT_MATRIX_HEIGHT - 1);
+}
+
+void
+lok_level_delete_object (LokLevel * level, int xpos, int ypos)
+{
+	t_matrix_insert (level->matrix, NULL, xpos , ypos);
+}
+
+
+
+
+
+

@@ -18,5 +18,5 @@ struct _LokGame {
 LokGame * lok_game_new (void);
 void lok_game_init (LokGame * game);
 void lok_game_set_hero (LokGame * game, LokHero * hero);
-
+void lok_game_set_new_level (LokGame * game);
 #endif /* __LOK_GAME_H__ */

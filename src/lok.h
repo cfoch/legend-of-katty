@@ -3,7 +3,7 @@
 
 #define LOK_DEBUG_MSG                               "Debug"
 
-#define LOK_MAX_LEVELS_NUMBER                       99
+#define LOK_MAX_LEVELS_NUMBER                       15
 #define LOK_HERO_MAX_LIFE_POINTS                    1000
 #define LOK_LEVEL_DEFAULT_LENGTH                    100
 #define LOK_BELT_MAX_LENGTH                         8

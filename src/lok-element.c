@@ -96,9 +96,9 @@ lok_element_type_to_string (LokElementType type)
 {
   switch (type) {
     case LOK_ELEMENT_TYPE_ARM:
-      return strdup ("arm");
+      return strdup ("Arm");
     case LOK_ELEMENT_TYPE_POTION:
-      return strdup ("potion");
+      return strdup ("Potion");
     default:
       return strdup ("(error)");
   }

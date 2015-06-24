@@ -10,6 +10,10 @@ struct _LokGameWidgetPrivate {
   GtkWidget *details_element_name_info;
   GtkWidget *details_element_points_info;
   GtkWidget *details_element_weight_info;
+  GtkWidget *options_push_bagpack;
+  GtkWidget *options_insert_belt;
+  GtkWidget *options_attack;
+  GtkWidget *options_ignore;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (LokGameWidget, lok_game_widget, GTK_TYPE_APPLICATION_WINDOW)
@@ -25,9 +29,10 @@ lok_game_screen_widget (LokGameWidget * game_widget)
   height = 600;
 
   screen = gtk_clutter_embed_new ();
-  gtk_widget_set_size_request (screen, height, width);
+  gtk_widget_set_size_request (screen, width, height);
 
   stage = gtk_clutter_embed_get_stage (GTK_CLUTTER_EMBED (screen));
+
   lok_game_stage_init (stage, game_widget);
 
   return screen;
@@ -45,8 +50,8 @@ lok_game_profile_panel_widget (LokGameWidget * game_widget)
   gint height, width;
   GError *pixbuf_err = NULL;
 
-  width = 600;
-  height = 160;
+  width = 160;
+  height = 600;
 
   game = game_widget->game;
 
@@ -82,7 +87,7 @@ lok_game_profile_panel_widget (LokGameWidget * game_widget)
   gtk_box_pack_start (GTK_BOX (box), hero_name, FALSE, FALSE, 10);
   gtk_box_pack_start (GTK_BOX (box), details, FALSE, FALSE, 10);
 
-  gtk_widget_set_size_request (GTK_WIDGET (box), height, width);
+  gtk_widget_set_size_request (GTK_WIDGET (box), width, height);
 
   game_widget->priv->details_level_label = details_level_info;
   game_widget->priv->details_life_info = details_life_info;
@@ -101,11 +106,14 @@ lok_game_element_panel_widget (LokGameWidget * game_widget)
   GtkWidget *details_element_points_label, *details_element_weight_label;
   GtkWidget *details_element_type_info, *details_element_name_info;
   GtkWidget *details_element_points_info, *details_element_weight_info;
+  GtkWidget *grid_options;
+  GtkWidget *options_push_bagpack, *options_insert_belt;
+  GtkWidget *options_ignore, *options_attack;
   LokGame *game;
   gint height, width;
 
-  width = 600;
-  height = 160;
+  width = 200;
+  height = 600;
 
   box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 5);
 
@@ -118,8 +126,8 @@ lok_game_element_panel_widget (LokGameWidget * game_widget)
 
   details_element_type_label = gtk_label_new ("Type");
   details_element_name_label = gtk_label_new ("Name");
-  details_element_points_label = gtk_label_new ("Points");
-  details_element_weight_label = gtk_label_new ("Weight");
+  details_element_points_label = gtk_label_new ("Points/Attack");
+  details_element_weight_label = gtk_label_new ("Weight/LifePoints");
 
   details_element_type_info = gtk_label_new (NULL);
   details_element_name_info = gtk_label_new (NULL);
@@ -146,11 +154,34 @@ lok_game_element_panel_widget (LokGameWidget * game_widget)
 
   gtk_grid_set_column_homogeneous (GTK_GRID (details), TRUE);
 
+  grid_options = gtk_grid_new ();
+  options_push_bagpack = gtk_button_new_with_label ("Push BagPack");
+  options_insert_belt = gtk_button_new_with_label ("Insert Belt");
+  options_attack = gtk_button_new_with_label ("Attack!");
+  options_ignore = gtk_button_new_with_label ("Ignore");
+
+  gtk_widget_set_sensitive (options_push_bagpack, FALSE);
+  gtk_widget_set_sensitive (options_insert_belt, FALSE);
+  gtk_widget_set_sensitive (options_attack, FALSE);
+  gtk_widget_set_sensitive (options_ignore, FALSE);
+
+  gtk_widget_set_can_focus (options_push_bagpack, FALSE);
+  gtk_widget_set_can_focus (options_insert_belt, FALSE);
+  gtk_widget_set_can_focus (options_attack, FALSE);
+  gtk_widget_set_can_focus (options_ignore, FALSE);
+
+  /* Make ne beautiful. If we don't need a button, just remove it! */
+  gtk_grid_attach (GTK_GRID (grid_options), options_push_bagpack, 0, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid_options), options_attack, 0, 1, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid_options), options_insert_belt, 1, 0, 1, 1);
+  gtk_grid_attach (GTK_GRID (grid_options), options_ignore, 1, 1, 1, 1);
+
   gtk_box_pack_start (GTK_BOX (box), element_label, FALSE, FALSE, 15);
   gtk_box_pack_start (GTK_BOX (box), element_avatar, FALSE, FALSE, 2);
   gtk_box_pack_start (GTK_BOX (box), details, FALSE, FALSE, 10);
+  gtk_box_pack_start (GTK_BOX (box), grid_options, FALSE, FALSE, 10);
 
-  gtk_widget_set_size_request (GTK_WIDGET (box), height, width);
+  gtk_widget_set_size_request (GTK_WIDGET (box), width, height);
 
   /* Setting private elements. */
   game_widget->priv->element_avatar = element_avatar;
@@ -161,6 +192,11 @@ lok_game_element_panel_widget (LokGameWidget * game_widget)
       details_element_points_info;
   game_widget->priv->details_element_weight_info =\
       details_element_weight_info;
+
+  game_widget->priv->options_push_bagpack = options_push_bagpack;
+  game_widget->priv->options_insert_belt = options_insert_belt;
+  game_widget->priv->options_attack = options_attack;
+  game_widget->priv->options_ignore = options_ignore;
 
   lok_game_widget_update_element_info (game_widget);
 
@@ -196,7 +232,29 @@ lok_game_widget_update_element_info (LokGameWidget * game_widget)
       weight_info = g_strdup_printf ("%d", element->weight);
 
       img_path = element->img_path;
+
+      /* Handle widgets */
+      gtk_widget_set_sensitive (game_widget->priv->options_push_bagpack, TRUE);
+      gtk_widget_set_sensitive (game_widget->priv->options_insert_belt, TRUE);
+      gtk_widget_set_sensitive (game_widget->priv->options_attack, FALSE);
+      gtk_widget_set_sensitive (game_widget->priv->options_ignore, TRUE);
+
     } else if (lok_level_object_is_enemy (level_object)) {
+      LokEnemy *enemy;
+      enemy = lok_level_object_get_enemy (level_object);
+
+			type_info = strdup ("Enemy");
+			name_info = g_strdup (enemy->name);
+			points_info = g_strdup_printf("%d", enemy->attack_points);
+			weight_info = g_strdup_printf("%d", enemy->life_points);
+
+			img_path = enemy->img;
+
+      /* Handle widgets */
+      gtk_widget_set_sensitive (game_widget->priv->options_push_bagpack, FALSE);
+      gtk_widget_set_sensitive (game_widget->priv->options_insert_belt, FALSE);
+      gtk_widget_set_sensitive (game_widget->priv->options_attack, TRUE);
+      gtk_widget_set_sensitive (game_widget->priv->options_ignore, TRUE);
 
     }
   }

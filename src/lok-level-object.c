@@ -6,7 +6,7 @@ lok_level_object_new (tpointer data, LokLevelObjectType type)
   LokLevelObject *object;
 
   object = malloc (sizeof (LokLevelObject));
-  if (type == LOK_LEVEL_OBJECT_TYPE_ELEMENT || LOK_LEVEL_OBJECT_TYPE_ENEMY)
+  if (type == LOK_LEVEL_OBJECT_TYPE_ELEMENT || type == LOK_LEVEL_OBJECT_TYPE_ENEMY)
     object->data = data;
   else
     object->data = NULL;
