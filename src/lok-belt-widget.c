@@ -37,7 +37,7 @@ lok_belt_widget_dialog_run (GtkWidget * dialog, LokGameWidget * game_widget)
   switch (result) {
     case RESPONSE_ID_USE:
     {
-      /*
+
       LokElement *element;
       gint i;
 
@@ -48,7 +48,7 @@ lok_belt_widget_dialog_run (GtkWidget * dialog, LokGameWidget * game_widget)
       if (!element)
         return;
       lok_hero_use_belt (hero, i);
-      */
+
       break;
     }
     case RESPONSE_ID_DROP:
@@ -64,7 +64,6 @@ lok_belt_widget_dialog_run (GtkWidget * dialog, LokGameWidget * game_widget)
       if (!level_object)
         return;
 
-
       element = LOK_ELEMENT (level_object->data);
       element_type = lok_element_get_type (element);
 
@@ -73,18 +72,8 @@ lok_belt_widget_dialog_run (GtkWidget * dialog, LokGameWidget * game_widget)
           -1);
 
       lok_belt_insert_element (game_widget->game->hero->belt, i, element);
-      g_print ("i (%d) name: %s\n", i,
-          lok_belt_get_element (game_widget->game->hero->belt, i)->name);
-      gtk_tree_store_set (GTK_TREE_STORE (game_widget->belt_tree_model), &iter,
-          COL_CAPACITY, lok_belt_get_belt_pocket (game_widget->game->hero->belt, i)->capacity,
-          COL_TYPE, lok_element_type_to_string (element_type),
-          COL_NAME, element->name,
-          COL_POINTS, element->points,
-          COL_WEIGHT, element->weight,
-          COL_AVAILABLE, TRUE,
-          COL_NUM_COL, i,
-          -1);
-
+      lok_level_delete_object (game_widget->game->current_level);
+      lok_game_widget_update_element_info (game_widget);
       break;
     }
   }
@@ -128,7 +117,7 @@ create_and_fill_model (LokGameWidget * game_widget)
           COL_AVAILABLE, TRUE,
           COL_NUM_COL, i,
           -1);
-    } else
+    } else {
       g_print ("Agregando <nada> al TreeView\n");
       gtk_tree_store_set (tree_store, &toplevel,
           COL_CAPACITY, lok_belt_get_belt_pocket (belt, i)->capacity,
@@ -139,6 +128,7 @@ create_and_fill_model (LokGameWidget * game_widget)
           COL_AVAILABLE, FALSE,
           COL_NUM_COL, i,
           -1);
+    }
   }
   game_widget->belt_tree_model = GTK_TREE_MODEL (tree_store);
   return GTK_TREE_MODEL (tree_store);
